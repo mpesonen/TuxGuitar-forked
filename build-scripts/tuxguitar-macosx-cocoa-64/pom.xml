@@ -20,6 +20,8 @@
 	</properties>
 
 	<modules>
+		<module>../../TGConverter</module>
+
 		<module>../../TuxGuitar</module>
 		<module>../../TuxGuitar-ui-toolkit</module>
 		<module>../../TuxGuitar-ui-toolkit-swt</module>
