@@ -14,26 +14,6 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.5.0</version>
-				<executions>
-					<execution>
-						<id>my-execution</id>
-						<phase>package</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>org.herac.tuxguitar.app.TGMainSingleton</mainClass>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencies>

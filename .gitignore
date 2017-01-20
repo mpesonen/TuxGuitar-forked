@@ -1,5 +1,7 @@
 .idea/
 .svn/
+.DS_Store
+.svn
 **/target/
 
 *.class
