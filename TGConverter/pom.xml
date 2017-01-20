@@ -46,10 +46,10 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>org.herac.tuxguitar.app.tools.custom.commandlineconverter.TGCommandLineConverter</mainClass>
+							<mainClass>converter.TGMain</mainClass>
 						</manifest>
 						<manifestEntries>
-							<Class-Path>lib/tuxguitar-lib-SNAPSHOT.jar lib/tuxguitar-SNAPSHOT.jar lib/tuxguitar-gtp-SNAPSHOT.jar lib/tuxguitar-gpx-SNAPSHOT.jar</Class-Path>
+							<Class-Path>lib/tuxguitar-lib-SNAPSHOT.jar lib/tuxguitar-SNAPSHOT.jar lib/tuxguitar-gtp-SNAPSHOT.jar lib/tuxguitar-gpx-SNAPSHOT.jar lib/tuxguitar-gm-utils-SNAPSHOT.jar lib/tuxguitar-compat-SNAPSHOT.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -95,20 +95,20 @@
 			<artifactId>tuxguitar-ptb</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>tuxguitar-tef</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>tuxguitar-midi</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>tuxguitar-lilypond</artifactId>
-			<scope>provided</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>${project.groupId}</groupId>-->
+			<!--<artifactId>tuxguitar-tef</artifactId>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>${project.groupId}</groupId>-->
+			<!--<artifactId>tuxguitar-midi</artifactId>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>${project.groupId}</groupId>-->
+			<!--<artifactId>tuxguitar-lilypond</artifactId>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
 	</dependencies>
 </project>

@@ -1,12 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-tuner/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TGConverter/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-winmm/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-viewer/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-ui-toolkit-swt/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-ui-toolkit-qt/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-ui-toolkit-jfx/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-ui-toolkit/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-tray/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-tef/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-svg/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-ptb/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-pdf/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-oss/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-musicxml/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-midi-ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-midi-input/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-midi/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-lilypond/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-lib/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-jsa/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-jack-ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-jack/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-image/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-gtp-ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-gtp/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-gpx/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-gm-utils/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-gm-settings/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-gervill/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-fluidsynth/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-editor-utils/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-debug-helper/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-CoreAudio/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-converter/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-compat/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-community/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-cocoa-integration/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-carbon-integration/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-browser-ftp/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-awt-graphics/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-AudioUnit/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-ascii/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android-midimaster/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android-midi/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android-gervill/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android-gdrive-gdaa/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android-gdrive/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android-browser-saf/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-android/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-alsa/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TuxGuitar-abc/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
