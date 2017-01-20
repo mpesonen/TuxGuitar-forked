@@ -1,0 +1,5 @@
+TuxGuitar 1.4 changes:
+
+* Qt4 port through qtjambi project (http://qtjambi.org/).
+* New edit Toolbar
+* Several bugs fixed
