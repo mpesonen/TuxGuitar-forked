@@ -10,10 +10,16 @@ public class GPXMasterBar {
 	private int accidentalCount;
 	private String mode;
 	private String tripletFeel;
-	
+
+	private String markerLetter;
+	private String markerText;
+
 	public GPXMasterBar(){
 		this.accidentalCount = 0;
 		this.mode = null;
+
+		this.markerLetter = null;
+		this.markerText = null;
 	}
 	
 	public int[] getBarIds() {
@@ -70,5 +76,21 @@ public class GPXMasterBar {
 	
 	public void setTripletFeel(String tripletFeel) {
 		this.tripletFeel = tripletFeel;
+	}
+
+	public String getMarkerText() {
+		return markerText;
+	}
+
+	public void setMarkerText(String markerText) {
+		this.markerText = markerText;
+	}
+
+	public String getMarkerLetter() {
+		return markerLetter;
+	}
+
+	public void setMarkerLetter(String markerLetter) {
+		this.markerLetter = markerLetter;
 	}
 }

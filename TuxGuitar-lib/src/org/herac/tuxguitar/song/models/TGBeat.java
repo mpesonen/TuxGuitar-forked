@@ -97,9 +97,11 @@ public abstract class TGBeat {
 		return ( this.chord != null );
 	}
 	
-	public boolean isTextBeat(){
+	public boolean isTextBeat() {
 		return ( this.text != null );
 	}
+
+	public void setStroke(TGStroke stroke) { this.stroke = stroke; }
 	
 	public TGStroke getStroke() {
 		return this.stroke;
@@ -115,7 +117,7 @@ public abstract class TGBeat {
 		return true;
 	}
 	
-	public TGBeat clone(TGFactory factory){
+	public TGBeat clone(TGFactory factory) {
 		TGBeat beat = factory.newBeat();
 		beat.setStart(getStart());
 		beat.getStroke().copyFrom(getStroke());

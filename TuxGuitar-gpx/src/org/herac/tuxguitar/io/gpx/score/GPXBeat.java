@@ -1,5 +1,10 @@
 package org.herac.tuxguitar.io.gpx.score;
 
+import org.herac.tuxguitar.song.models.TGStroke;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GPXBeat {
 	
 	private int id;
@@ -13,6 +18,14 @@ public class GPXBeat {
 	private boolean FadeIn;
 	private boolean FadeOut;
 	private String text;
+	private List<String> lyricsLines;
+
+	private boolean hasChordDiagram;
+	private int chordDiagramId;
+	private GPXChordDiagram chordDiagram;
+	private String chordName;
+
+	private int pickStrokeType;
 	
 	private boolean whammyBarEnabled;
 	private Integer whammyBarOriginValue;
@@ -31,6 +44,8 @@ public class GPXBeat {
 		this.FadeOut = false;
 		this.brush = new String();
 		this.text = new String();
+		this.hasChordDiagram = false;
+		this.lyricsLines = new ArrayList<String>();
 	}
 	
 	public int getId() {
@@ -121,6 +136,10 @@ public class GPXBeat {
 		this.text = text;
 	}
 
+	public int getPickStrokeType() { return pickStrokeType; }
+
+	public void setPickStrokeType(int pickStrokeType) { this.pickStrokeType = pickStrokeType; }
+
 	public boolean isWhammyBarEnabled() {
 		return whammyBarEnabled;
 	}
@@ -183,5 +202,45 @@ public class GPXBeat {
 
 	public void setWhammyBarDestinationOffset(Integer whammyBarDestinationOffset) {
 		this.whammyBarDestinationOffset = whammyBarDestinationOffset;
+	}
+
+	public boolean getHasChordDiagram() {
+		return hasChordDiagram;
+	}
+
+	public void setHasChordDiagram(boolean hasChordDiagram) {
+		this.hasChordDiagram = hasChordDiagram;
+	}
+
+	public int getChordDiagramId() {
+		return chordDiagramId;
+	}
+
+	public void setChordDiagramId(int chordDiagramId) {
+		this.chordDiagramId = chordDiagramId;
+	}
+
+	public String getChordName() {
+		return chordName;
+	}
+
+	public void setChordName(String chordName) {
+		this.chordName = chordName;
+	}
+
+	public List<String> getLyricsLines() {
+		return lyricsLines;
+	}
+
+	public void addLyricsLine(String lyricsLine) {
+		this.lyricsLines.add(lyricsLine);
+	}
+
+	public GPXChordDiagram getChordDiagram() {
+		return chordDiagram;
+	}
+
+	public void setChordDiagram(GPXChordDiagram chordDiagram) {
+		this.chordDiagram = chordDiagram;
 	}
 }

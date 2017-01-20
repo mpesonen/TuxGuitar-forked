@@ -1,18 +1,30 @@
 package org.herac.tuxguitar.io.gpx.score;
 
+import org.herac.tuxguitar.song.factory.TGFactory;
+import org.herac.tuxguitar.song.models.TGLyric;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GPXTrack {
 	
 	private int id;
 	private int[] tunningPitches;
 	private int[] color;
 	private String name;
+
+	private List<GPXChordDiagram> chordDiagrams;
 	
 	private int gmProgram;
 	private int gmChannel1;
 	private int gmChannel2;
+
+	private TGLyric lyrics;
 	
 	public GPXTrack(){
 		super();
+		this.chordDiagrams = new ArrayList<GPXChordDiagram>();
+		this.lyrics = null;
 	}
 	
 	public int getId() {
@@ -69,5 +81,21 @@ public class GPXTrack {
 
 	public void setGmChannel2(int gmChannel2) {
 		this.gmChannel2 = gmChannel2;
+	}
+
+	public List<GPXChordDiagram> getChordDiagrams() {
+		return chordDiagrams;
+	}
+
+	public void addChordDiagram(GPXChordDiagram chordDiagrams) {
+		this.chordDiagrams.add(chordDiagrams);
+	}
+
+	public TGLyric getLyrics() {
+		return lyrics;
+	}
+
+	public void setLyrics(TGLyric lyrics) {
+		this.lyrics = lyrics;
 	}
 }

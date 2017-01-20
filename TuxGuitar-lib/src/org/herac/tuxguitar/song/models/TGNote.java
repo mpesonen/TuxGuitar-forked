@@ -20,6 +20,8 @@ public abstract class TGNote {
 	private boolean tiedNote;
 	private TGNoteEffect effect;
 	private TGVoice voice;
+	private int leftFingering;
+	private int rightFingering;
 	
 	public TGNote(TGFactory factory) {
 		this.value = 0;
@@ -27,6 +29,8 @@ public abstract class TGNote {
 		this.string = 1;
 		this.tiedNote = false;
 		this.effect = factory.newEffect();
+		this.leftFingering = -2;
+		this.rightFingering = -2;
 	}
 	
 	public int getValue() {
@@ -76,6 +80,16 @@ public abstract class TGNote {
 	public void setVoice(TGVoice voice) {
 		this.voice = voice;
 	}
+
+	public int getLeftFingering() { return this.leftFingering; }
+
+	public int getRightFingering() { return this.rightFingering; }
+
+	public void setLeftFingering(int fingering ) { this.leftFingering = fingering; }
+
+	public void setRightFingering(int fingering ) { this.rightFingering = fingering; }
+
+	public boolean isFingeringSpecifiedNote() { return this.getLeftFingering() > -2 || this.getRightFingering() > -2; }
 	
 	public TGNote clone(TGFactory factory){
 		TGNote note = factory.newNote();
@@ -84,6 +98,8 @@ public abstract class TGNote {
 		note.setString(getString());
 		note.setTiedNote(isTiedNote());
 		note.setEffect(getEffect().clone(factory));
+		note.setLeftFingering( getLeftFingering() );
+		note.setRightFingering( getRightFingering() );
 		return note;
 	}
 }

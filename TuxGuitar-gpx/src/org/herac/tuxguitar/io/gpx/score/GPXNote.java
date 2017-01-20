@@ -1,7 +1,7 @@
 package org.herac.tuxguitar.io.gpx.score;
 
 public class GPXNote {
-	
+
 	private int id;
 	private int fret;
 	private int string;
@@ -20,6 +20,35 @@ public class GPXNote {
 	private Integer bendMiddleOffset1;
 	private Integer bendMiddleOffset2;
 	private Integer bendDestinationOffset;
+
+	private String leftFingering;
+	private String rightFingering;
+
+	public int getLeftFingeringAsInt()
+	{
+		if (this.leftFingering == null) { return -2; }
+		if (this.leftFingering.equals("Open")) { return -1; }
+		if (this.leftFingering.equals("P")) { return 0; }
+		if (this.leftFingering.equals("I")) { return 1; }
+		if (this.leftFingering.equals("M")) { return 2; }
+		if (this.leftFingering.equals("A")) { return 3; }
+		if (this.leftFingering.equals("C")) { return 4; }
+
+		return -2;
+	}
+
+	public int getRightFingeringAsInt()
+	{
+		if (this.rightFingering == null) { return -2; }
+		if (this.rightFingering == "Open") { return -1; }
+		if (this.rightFingering == "P") { return 0; }
+		if (this.rightFingering == "I") { return 1; }
+		if (this.rightFingering == "M") { return 2; }
+		if (this.rightFingering == "A") { return 3; }
+		if (this.rightFingering == "C") { return 4; }
+
+		return -2;
+	}
 	
 	private boolean hammer;
 	private boolean ghost;
@@ -35,7 +64,7 @@ public class GPXNote {
 	private int harmonicFret;
 	private String harmonicType;
 
-	public GPXNote(){
+	public GPXNote() {
 		super();
 		this.id = -1;
 		this.fret = -1;
@@ -52,6 +81,8 @@ public class GPXNote {
 		this.slideFlags = 0;
 		this.harmonicType = "";
 		this.harmonicFret = -1;
+		this.leftFingering = "None";
+		this.rightFingering = "None";
 	}
 	
 	public int getId() {
@@ -230,9 +261,15 @@ public class GPXNote {
 		this.bendDestinationOffset = bendDestinationOffset;
 	}
 
-	public boolean isHammer() {
-		return hammer;
-	}
+	public String getLeftFingering() { return leftFingering; }
+
+	public String getRightFingering() { return rightFingering; }
+
+	public void setLeftFingering(String fingering) { this.leftFingering = fingering; }
+
+	public void setRightFingering(String fingering) { this.rightFingering = fingering; }
+
+	public boolean isHammer() { return hammer; }
 
 	public void setHammer(boolean hammer) {
 		this.hammer = hammer;
