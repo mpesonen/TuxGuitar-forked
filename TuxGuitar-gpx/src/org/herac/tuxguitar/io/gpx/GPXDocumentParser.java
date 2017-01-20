@@ -5,32 +5,10 @@ import java.util.List;
 
 import org.herac.tuxguitar.gm.GMChannelRoute;
 import org.herac.tuxguitar.graphics.control.TGNoteImpl;
-import org.herac.tuxguitar.io.gpx.score.GPXAutomation;
-import org.herac.tuxguitar.io.gpx.score.GPXBar;
-import org.herac.tuxguitar.io.gpx.score.GPXBeat;
-import org.herac.tuxguitar.io.gpx.score.GPXDocument;
-import org.herac.tuxguitar.io.gpx.score.GPXDrumkit;
-import org.herac.tuxguitar.io.gpx.score.GPXMasterBar;
-import org.herac.tuxguitar.io.gpx.score.GPXNote;
-import org.herac.tuxguitar.io.gpx.score.GPXRhythm;
-import org.herac.tuxguitar.io.gpx.score.GPXTrack;
-import org.herac.tuxguitar.io.gpx.score.GPXVoice;
+import org.herac.tuxguitar.io.gpx.score.*;
 import org.herac.tuxguitar.song.factory.TGFactory;
 import org.herac.tuxguitar.song.managers.TGSongManager;
-import org.herac.tuxguitar.song.models.TGBeat;
-import org.herac.tuxguitar.song.models.TGChannel;
-import org.herac.tuxguitar.song.models.TGChannelParameter;
-import org.herac.tuxguitar.song.models.TGDuration;
-import org.herac.tuxguitar.song.models.TGMeasure;
-import org.herac.tuxguitar.song.models.TGMeasureHeader;
-import org.herac.tuxguitar.song.models.TGNote;
-import org.herac.tuxguitar.song.models.TGSong;
-import org.herac.tuxguitar.song.models.TGString;
-import org.herac.tuxguitar.song.models.TGStroke;
-import org.herac.tuxguitar.song.models.TGText;
-import org.herac.tuxguitar.song.models.TGTrack;
-import org.herac.tuxguitar.song.models.TGVelocities;
-import org.herac.tuxguitar.song.models.TGVoice;
+import org.herac.tuxguitar.song.models.*;
 import org.herac.tuxguitar.song.models.effects.TGEffectBend;
 import org.herac.tuxguitar.song.models.effects.TGEffectHarmonic;
 import org.herac.tuxguitar.song.models.effects.TGEffectTremoloBar;
@@ -112,6 +90,10 @@ public class GPXDocumentParser {
 			tgTrack.setNumber( i + 1 );
 			tgTrack.setName(gpTrack.getName());
 			tgTrack.setChannelId(tgChannel.getChannelId());
+
+			// Add lyrics
+			if (gpTrack.getLyrics() != null)
+				tgTrack.setLyrics( gpTrack.getLyrics() );
 			
 			if( gpTrack.getTunningPitches() != null ){
 				for( int s = 1; s <= gpTrack.getTunningPitches().length ; s ++ ){
@@ -155,6 +137,7 @@ public class GPXDocumentParser {
 			tgMeasureHeader.setRepeatOpen(mbar.isRepeatStart());
 			tgMeasureHeader.setRepeatClose(mbar.getRepeatCount());
 			tgMeasureHeader.setTripletFeel(parseTripletFeel(mbar));
+			tgMeasureHeader.setMarker(parseMarker(mbar, i));
 			if( mbar.getTime() != null && mbar.getTime().length == 2){
 				tgMeasureHeader.getTimeSignature().setNumerator(mbar.getTime()[0]);
 				tgMeasureHeader.getTimeSignature().getDenominator().setValue(mbar.getTime()[1]);
@@ -242,13 +225,30 @@ public class GPXDocumentParser {
 							tgVoice.setEmpty(false);
 							tgBeat.getStroke().setDirection( this.parseStroke(beat) );
 
-							if (beat.getText().length() > 0) {
+							if (beat.getText() != null && !beat.getText().isEmpty()) {
 								TGText text = this.factory.newText();
 								text.setValue(beat.getText().trim());
 								text.setBeat(tgBeat);
 								tgBeat.setText(text);
 							}
-							
+
+							TGStroke stroke = this.factory.newStroke();
+							stroke.setDirection(beat.getPickStrokeType());
+							tgBeat.setStroke( stroke );
+
+							// Reading chord diagram from GPX to TG
+							if (beat.getHasChordDiagram()) {
+								int stringCount = 6;
+								TGChord chord = this.factory.newChord(6);
+								chord.setFirstFret(0);
+								chord.setName(beat.getChordName());
+								GPXChordDiagram chordDiagram = beat.getChordDiagram();
+								for (int strId = 0; strId < chordDiagram.getFrets().size(); strId++)
+									chord.addFretValue(strId, chordDiagram.getFrets().get(strId));
+								chord.setBeat(tgBeat);
+								tgBeat.setChord(chord);
+							}
+
 							this.parseRhythm(gpRhythm, tgVoice.getDuration());
 							if( beat.getNoteIds() != null ){
 								int tgVelocity = this.parseDynamic(beat);
@@ -327,8 +327,9 @@ public class GPXDocumentParser {
 			tgNote.getEffect().setHarmonic(parseHarmonic( gpNote ) );
 			tgNote.getEffect().setBend(parseBend( gpNote ) );
 			tgNote.getEffect().setTremoloBar(parseTremoloBar( gpBeat ));
-			
-			tgVoice.addNote( tgNote );
+			tgNote.setLeftFingering( gpNote.getLeftFingeringAsInt() );
+			tgNote.setRightFingering( gpNote.getRightFingeringAsInt() );
+			tgVoice.addNote(tgNote);
 		}
 	}
 	
@@ -391,7 +392,7 @@ public class GPXDocumentParser {
 		TGEffectBend bend = null;
 		if( note.isBendEnabled() && note.getBendOriginValue() != null && note.getBendDestinationValue() != null ){
 			bend = this.factory.newEffectBend();
-			
+
 			// Add the first point
 			bend.addPoint(0, parseBendValue(note.getBendOriginValue()));
 			
@@ -550,6 +551,17 @@ public class GPXDocumentParser {
 			}
 		}
 		return TGMeasureHeader.TRIPLET_FEEL_NONE;
+	}
+
+	private TGMarker parseMarker(GPXMasterBar gpxMasterBar, int measureIndex) {
+		if (gpxMasterBar.getMarkerText() == null) { return null; }
+
+		TGMarker marker = this.factory.newMarker();
+
+		marker.setMeasure(measureIndex);
+		marker.setTitle(gpxMasterBar.getMarkerText());
+
+		return marker;
 	}
 	
 	private TGBeat getBeat(TGMeasure measure, long start){

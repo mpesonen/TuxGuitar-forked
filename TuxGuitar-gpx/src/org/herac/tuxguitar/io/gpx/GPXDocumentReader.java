@@ -5,18 +5,23 @@ import java.math.BigDecimal;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.herac.tuxguitar.io.gpx.score.GPXAutomation;
-import org.herac.tuxguitar.io.gpx.score.GPXBar;
-import org.herac.tuxguitar.io.gpx.score.GPXBeat;
-import org.herac.tuxguitar.io.gpx.score.GPXDocument;
-import org.herac.tuxguitar.io.gpx.score.GPXMasterBar;
-import org.herac.tuxguitar.io.gpx.score.GPXNote;
-import org.herac.tuxguitar.io.gpx.score.GPXRhythm;
-import org.herac.tuxguitar.io.gpx.score.GPXTrack;
-import org.herac.tuxguitar.io.gpx.score.GPXVoice;
+import org.herac.tuxguitar.graphics.control.TGLyricImpl;
+import org.herac.tuxguitar.io.gpx.score.*;
+import org.herac.tuxguitar.song.factory.TGFactory;
+import org.herac.tuxguitar.song.models.TGLyric;
+import org.herac.tuxguitar.song.models.TGStroke;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
 
 public class GPXDocumentReader {
 	
@@ -26,6 +31,8 @@ public class GPXDocumentReader {
 	public GPXDocumentReader(InputStream stream){
 		this.xmlDocument = getDocument(stream);
 		this.gpxDocument = new GPXDocument();
+
+		//System.out.println(getStringFromDoc(this.xmlDocument));
 	}
 	
 	private Document getDocument(InputStream stream) {
@@ -48,10 +55,140 @@ public class GPXDocumentReader {
 			this.readBeats();
 			this.readNotes();
 			this.readRhythms();
+
+			postProcessChordDiagrams();
+			postProcessLyrics();
 		}
 		return this.gpxDocument;
 	}
-	
+
+	private void postProcessChordDiagrams() {
+		// Basically the trackId has to be decoded in order to know which diagram relates to which GPXBeat
+		for (GPXBeat beat : this.gpxDocument.getBeats()) {
+            if (beat.getHasChordDiagram()) {
+                int beatId = beat.getId();
+
+                int chordId = beat.getChordDiagramId();
+
+                for (GPXVoice voice : this.gpxDocument.getVoices()) {
+                    for (int voiceBeatId : voice.getBeatIds()){
+                        if (voiceBeatId == beatId) {
+                            int voiceId = voice.getId();
+
+                            for (GPXBar bar : this.gpxDocument.getBars())
+                            {
+                                for (int barVoiceId : bar.getVoiceIds())
+                                {
+                                    if (barVoiceId == voiceId) {
+                                        int barId = bar.getId();
+
+                                        for (GPXMasterBar masterBar : this.gpxDocument.getMasterBars()) {
+											int[] barIds = masterBar.getBarIds();
+                                            for (int i=0; i < barIds.length; i++) {
+                                                if (barIds[i] == barId) {
+                                                    int trackId = i;
+
+                                                    GPXChordDiagram chordDiagram = this.gpxDocument.getTracks().get(trackId).getChordDiagrams().get(chordId);
+                                                    beat.setChordName(chordDiagram.getName());
+													beat.setChordDiagram(chordDiagram);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+	}
+
+	private void postProcessLyrics() {
+		int lyricTrackIndex = -1;
+
+		// Basically the trackId has to be decoded in order to know which lyric line relates to which GPXBeat
+		findTrackIndexLoop:
+		for (GPXBeat beat : this.gpxDocument.getBeats()) {
+			if (beat.getLyricsLines().size() > 0) {
+				int beatId = beat.getId();
+
+				for (GPXVoice voice : this.gpxDocument.getVoices()) {
+					for (int voiceBeatId : voice.getBeatIds()){
+						if (voiceBeatId == beatId) {
+							int voiceId = voice.getId();
+
+							for (GPXBar bar : this.gpxDocument.getBars())
+							{
+								for (int barVoiceId : bar.getVoiceIds())
+								{
+									if (barVoiceId == voiceId) {
+										int barId = bar.getId();
+
+										for (GPXMasterBar masterBar : this.gpxDocument.getMasterBars()) {
+											int[] barIds = masterBar.getBarIds();
+											for (int i=0; i < barIds.length; i++) {
+												if (barIds[i] == barId) {
+													lyricTrackIndex = i;
+													break findTrackIndexLoop;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (lyricTrackIndex > -1) {
+			TGLyric lyrics = new TGLyricImpl();
+			lyrics.setFrom(lyricTrackIndex);
+
+			// Find all ids of beats with lyrics
+			List<Integer> beatsWithLyricsIds = new ArrayList<Integer>();
+			for (GPXBeat beat : this.gpxDocument.getBeats()) {
+				if (beat.getLyricsLines().size() > 0) {
+					beatsWithLyricsIds.add(new Integer(beat.getId()));
+				}
+			}
+
+			List<Integer> decodedBeatsWithLyricsIds = new ArrayList<Integer>();
+			// Find all voices with beats with lyrics
+			for(GPXVoice voice : this.gpxDocument.getVoices())
+			{
+				for (int voiceBeatId : voice.getBeatIds()) {
+					for (Integer beatWithLyric : beatsWithLyricsIds) {
+						if (beatWithLyric.intValue() == voiceBeatId) {
+							decodedBeatsWithLyricsIds.add(beatWithLyric);
+						}
+					}
+				}
+			}
+
+			String[] lyricLines = new String[] {"", "", "", "", ""};
+
+			for (Integer decodedBeatWithLyric : decodedBeatsWithLyricsIds) {
+				for (GPXBeat beat : this.gpxDocument.getBeats()) {
+					int lyricsLinesCount = beat.getLyricsLines().size();
+					if (decodedBeatWithLyric.intValue() == beat.getId()) {
+						for (int i = 0; i < lyricsLinesCount; i++) {
+							lyricLines[i] += beat.getLyricsLines().get(i) + "\n";
+						}
+					}
+				}
+			}
+
+			// TGLyrics only handles one line of lyrics as of now
+			lyrics.setLyrics(lyricLines[0]);
+
+			gpxDocument.getTracks().get(lyricTrackIndex).setLyrics(lyrics);
+		}
+	}
+
 	public void readScore(){
 		if( this.xmlDocument != null ){
 			Node scoreNode = getChildNode(this.xmlDocument.getFirstChild(), "Score");
@@ -119,6 +256,40 @@ public class GPXDocumentReader {
 								if( getAttributeValue(propertyNode, "name").equals("Tuning") ){
 									track.setTunningPitches( getChildNodeIntegerContentArray(propertyNode, "Pitches") );
 								}
+
+								// Read chord diagram collection
+								if ( getAttributeValue(propertyNode, "name").equals("DiagramCollection")) {
+									NodeList diagramCollectionItems = getChildNodeList(propertyNode, "Items");
+									if (diagramCollectionItems != null) {
+										for (int diagId=0; diagId < diagramCollectionItems.getLength(); diagId++) {
+											Node chordItemNode = diagramCollectionItems.item(diagId);
+
+											if (chordItemNode.getNodeName() != null && chordItemNode.getNodeName().equals("Item"))
+											{
+												int chordItemId = getAttributeIntegerValue(chordItemNode, "id");
+												String chordItemName = getAttributeValue(chordItemNode, "name");
+
+												GPXChordDiagram chordDiagram = new GPXChordDiagram(chordItemId, chordItemName);
+
+												Node chordItemDiagram = getChildNode(chordItemNode, "Diagram");
+												NodeList chordDiagramChildren = chordItemDiagram.getChildNodes();
+
+												chordDiagram.setFirstFret(getAttributeIntegerValue(chordItemDiagram, "baseFret"));
+												int stringCount = getAttributeIntegerValue(chordItemDiagram, "stringCount");
+												for (int chordDiagramChildIndex = 0; chordDiagramChildIndex < chordDiagramChildren.getLength(); chordDiagramChildIndex++) {
+													Node chordDiagramChildNode = chordDiagramChildren.item(chordDiagramChildIndex);
+
+													if (chordDiagramChildNode.getNodeName().equals("Fret")) {
+														chordDiagram.addFret(new Integer(getAttributeIntegerValue(chordDiagramChildNode, "fret")));
+													}
+												}
+												Collections.reverse(chordDiagram.getFrets());
+
+												track.addChordDiagram(chordDiagram);
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -151,6 +322,12 @@ public class GPXDocumentReader {
 					if (keyNode != null) {
 						masterBar.setAccidentalCount(this.getChildNodeIntegerContent(keyNode, "AccidentalCount") ); 
 						masterBar.setMode(this.getChildNodeContent(keyNode, "Mode") ); 
+					}
+
+					Node sectionNode = getChildNode(masterBarNode, "Section");
+					if (sectionNode != null) {
+						masterBar.setMarkerLetter(this.getChildNodeContent(sectionNode, "Letter").trim() );
+						masterBar.setMarkerText(this.getChildNodeContent(sectionNode, "Text").trim() );
 					}
 					
 					this.gpxDocument.getMasterBars().add( masterBar );
@@ -192,27 +369,78 @@ public class GPXDocumentReader {
 			}
 		}
 	}
+
+	public String getStringFromDoc(org.w3c.dom.Document doc) {
+		try
+		{
+			DOMSource domSource = new DOMSource(doc);
+			StringWriter writer = new StringWriter();
+			StreamResult result = new StreamResult(writer);
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.transform(domSource, result);
+			writer.flush();
+			return writer.toString();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			return null;
+		}
+	}
 	
 	public void readBeats(){
 		if( this.xmlDocument != null ){
 			NodeList beatNodes = getChildNodeList(this.xmlDocument.getFirstChild(), "Beats");
 			for( int i = 0 ; i < beatNodes.getLength() ; i ++ ){
 				Node beatNode = beatNodes.item( i );
-				if( beatNode.getNodeName().equals("Beat") ){
+				if( beatNode.getNodeName().equals("Beat") ) {
 					GPXBeat beat = new GPXBeat();
 					beat.setId(getAttributeIntegerValue(beatNode, "id"));
 					beat.setDynamic(getChildNodeContent(beatNode, "Dynamic"));
 					beat.setRhythmId(getAttributeIntegerValue(getChildNode(beatNode, "Rhythm"), "ref"));
 					beat.setTremolo( getChildNodeIntegerContentArray(beatNode, "Tremolo", "/"));
+					// Reading "arpeggio region"
+					beat.setText ( getChildNodeContent(beatNode, "FreeText") );
 					beat.setNoteIds( getChildNodeIntegerContentArray(beatNode, "Notes"));
-					
+					String chordNode = getChildNodeContent(beatNode, "Chord" );
+
+					// Reading chord
+					if (chordNode != null && !chordNode.isEmpty()) {
+						beat.setHasChordDiagram ( true );
+						beat.setChordDiagramId( Integer.parseInt(chordNode) );
+					}
+
+					// Reading lyrics
+					NodeList lyricsLineNodes = getChildNodeList(beatNode, "Lyrics");
+					if (lyricsLineNodes != null) {
+						for (int lyricIndex = 0; lyricIndex < lyricsLineNodes.getLength(); lyricIndex++) {
+							Node lyricNode = lyricsLineNodes.item(lyricIndex);
+							if (lyricNode.getNodeName() != null && lyricNode.getNodeName().equals("Line")) {
+								if (lyricNode.getTextContent() != null)
+									beat.addLyricsLine( lyricNode.getTextContent() );
+							}
+						}
+					}
+
 					NodeList propertyNodes = getChildNodeList(beatNode, "Properties");
 					if( propertyNodes != null ){
 						for( int p = 0 ; p < propertyNodes.getLength() ; p ++ ){
 							Node propertyNode = propertyNodes.item( p );
 							if (propertyNode.getNodeName().equals("Property") ){ 
 								String propertyName = getAttributeValue(propertyNode, "name");
-								
+
+								if (propertyName.equals("PickStroke")) {
+									String propertyValue = new String();
+									propertyValue = getChildNodeContent(propertyNode, "Direction");
+
+									if (propertyValue.toUpperCase().equals("UP"))
+										beat.setPickStrokeType(TGStroke.STROKE_UP);
+									else if (propertyValue.toUpperCase().equals("DOWN"))
+										beat.setPickStrokeType(TGStroke.STROKE_DOWN);
+									else
+										beat.setPickStrokeType(TGStroke.STROKE_NONE);
+								}
 								if( propertyName.equals("WhammyBar") ){
 									beat.setWhammyBarEnabled( getChildNode(propertyNode, "Enable") != null );
 								}
@@ -266,6 +494,10 @@ public class GPXDocumentReader {
 					
 					note.setAccent(getChildNodeIntegerContent(noteNode, "Accent"));
 					note.setTrill(getChildNodeIntegerContent(noteNode, "Trill"));
+
+					// Reading fingerings
+					note.setLeftFingering( getChildNodeContent(noteNode, "LeftFingering") );
+					note.setRightFingering( getChildNodeContent(noteNode, "RightFingering") );
 
 					note.setVibrato( getChildNode(noteNode, "Vibrato") != null );
 					
