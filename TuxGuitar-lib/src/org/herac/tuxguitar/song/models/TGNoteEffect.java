@@ -71,12 +71,12 @@ public abstract class TGNoteEffect {
 		this.fadeIn = false;
 		this.letRing = false;
 
-		isLegatoSlide = false;
-		isShiftSlide = false;
-		isSlideInFromAbove = false;
-		isSlideInFromBelow = false;
-		isSlideOutDownwards = false;
-		isSlideOutUpwards = false;
+		this.isLegatoSlide = false;
+		this.isShiftSlide = false;
+		this.isSlideInFromAbove = false;
+		this.isSlideInFromBelow = false;
+		this.isSlideOutDownwards = false;
+		this.isSlideOutUpwards = false;
 	}
 	
 	public boolean isDeadNote() {
