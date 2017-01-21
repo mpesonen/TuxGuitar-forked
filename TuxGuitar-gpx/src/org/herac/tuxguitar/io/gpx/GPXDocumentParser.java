@@ -312,6 +312,7 @@ public class GPXDocumentParser {
 			tgNote.getEffect().setFadeIn(gpBeat.isFadeIn());
 			tgNote.getEffect().setVibrato(gpNote.isVibrato());
 			tgNote.getEffect().setSlide(gpNote.isSlide());
+			tgNote.getEffect().setSlideFlags(gpNote.getSlideFlags());
 			tgNote.getEffect().setDeadNote(gpNote.isMutedEnabled());
 			tgNote.getEffect().setPalmMute(gpNote.isPalmMutedEnabled());
 			tgNote.getEffect().setTapping(gpNote.isTapped());
@@ -589,7 +590,8 @@ public class GPXDocumentParser {
 					TGVoice voice = tgBeat.getVoice( v );
 					Iterator<TGNote> it = voice.getNotes().iterator();
 					while (it.hasNext()) {
-						TGNoteImpl note = (TGNoteImpl) it.next();
+						TGNote newNote = it.next();
+						TGNoteImpl note = (TGNoteImpl) newNote;
 						if (note.getString() == string.getNumber()) {
 							emptyString = false;
 							break;

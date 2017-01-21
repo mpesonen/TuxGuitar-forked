@@ -41,6 +41,13 @@ public abstract class TGNoteEffect {
 	private boolean popping;
 	private boolean fadeIn;
 	private boolean letRing;
+
+	private boolean isLegatoSlide;
+	private boolean isShiftSlide;
+	private boolean isSlideInFromAbove;
+	private boolean isSlideInFromBelow;
+	private boolean isSlideOutDownwards;
+	private boolean isSlideOutUpwards;
 	
 	public TGNoteEffect(){
 		this.bend = null;
@@ -63,6 +70,13 @@ public abstract class TGNoteEffect {
 		this.popping = false;
 		this.fadeIn = false;
 		this.letRing = false;
+
+		isLegatoSlide = false;
+		isShiftSlide = false;
+		isSlideInFromAbove = false;
+		isSlideInFromBelow = false;
+		isSlideOutDownwards = false;
+		isSlideOutUpwards = false;
 	}
 	
 	public boolean isDeadNote() {
@@ -215,6 +229,35 @@ public abstract class TGNoteEffect {
 			this.tremoloPicking = null;
 		}
 	}
+
+	public void setSlideFlags(int slideFlagBitMask) {
+		if ((2 & slideFlagBitMask) == 2) {
+			this.isLegatoSlide = true;
+		}
+		if ((1 & slideFlagBitMask) == 1) {
+			this.isShiftSlide = true;
+		}
+		if ((32 & slideFlagBitMask) == 32) {
+			this.isSlideInFromAbove = true;
+		}
+		if ((16 & slideFlagBitMask) == 16) {
+			this.isSlideInFromBelow = true;
+		}
+		if ((4 & slideFlagBitMask) == 4) {
+			this.isSlideOutDownwards = true;
+		}
+		if ((8 & slideFlagBitMask) == 8) {
+			this.isSlideOutUpwards = true;
+		}
+		
+	}
+
+	public boolean isLegatoSlide() { return this.isLegatoSlide; }
+	public boolean isShiftSlide() { return this.isShiftSlide; }
+	public boolean isSlideInFromAbove() { return this.isSlideInFromAbove; }
+	public boolean isSlideInFromBelow() { return this.isSlideInFromBelow; }
+	public boolean isSlideOutDownwards() { return this.isSlideOutDownwards; }
+	public boolean isSlideOutUpwards() { return this.isSlideOutUpwards; }
 	
 	public boolean isGhostNote() {
 		return this.ghostNote;
