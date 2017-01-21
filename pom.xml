@@ -365,17 +365,24 @@
 	</repositories>
 
 	<!-- We need a cross platform SWT version to compile projects -->
-	<!--<properties>-->
-		<!--<org.eclipse.swt.groupId>org.eclipse.swt</org.eclipse.swt.groupId>-->
-		<!--<org.eclipse.swt.artifactId>org.eclipse.swt</org.eclipse.swt.artifactId>-->
-	<!--</properties>-->
-
 	<properties>
 		<org.eclipse.swt.groupId>org.eclipse.swt</org.eclipse.swt.groupId>
-		<org.eclipse.swt.artifactId>org.eclipse.swt.cocoa.macosx.x86_64</org.eclipse.swt.artifactId>
+		<org.eclipse.swt.artifactId>org.eclipse.swt</org.eclipse.swt.artifactId>
 	</properties>
 	
 	<profiles>
+		<profile>
+			<id>platform-macosx-x86_64</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<org.eclipse.swt.groupId>org.eclipse.swt</org.eclipse.swt.groupId>
+				<org.eclipse.swt.artifactId>org.eclipse.swt.cocoa.macosx.x86_64</org.eclipse.swt.artifactId>
+			</properties>
+		</profile>
 		<profile>
 			<id>platform-windows-all</id>
 			<activation>
