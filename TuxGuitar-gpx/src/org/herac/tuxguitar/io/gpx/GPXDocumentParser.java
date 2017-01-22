@@ -236,7 +236,7 @@ public class GPXDocumentParser {
 							stroke.setDirection(beat.getPickStrokeType());
 							stroke.setValue(TGDuration.SIXTY_FOURTH);
 							tgBeat.setStroke( stroke );
-
+							
 							// Reading chord diagram from GPX to TG
 							if (beat.getHasChordDiagram()) {
 								int stringCount = 6;
@@ -593,8 +593,7 @@ public class GPXDocumentParser {
 					Iterator<TGNote> it = voice.getNotes().iterator();
 					while (it.hasNext()) {
 						TGNote newNote = it.next();
-						TGNoteImpl note = (TGNoteImpl) newNote;
-						if (note.getString() == string.getNumber()) {
+						if (newNote.getString() == string.getNumber()) {
 							emptyString = false;
 							break;
 						}

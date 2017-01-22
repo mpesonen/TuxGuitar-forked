@@ -28,7 +28,7 @@ public class GPXNote {
 	{
 		String leftFingering = getLeftFingering();
 
-		if (leftFingering == null) { return -2; }
+		if (leftFingering == null) { return -1; }
 		if (leftFingering.equals("Open")) { return -1; }
 		if (leftFingering.equals("P")) { return 0; }
 		if (leftFingering.equals("I")) { return 1; }
@@ -36,22 +36,22 @@ public class GPXNote {
 		if (leftFingering.equals("A")) { return 3; }
 		if (leftFingering.equals("C")) { return 4; }
 
-		return -2;
+		return -1;
 	}
 
 	public int getRightFingeringAsInt()
 	{
 		String rightFingering = getRightFingering();
 
-		if (rightFingering == null) { return -2; }
-		if (rightFingering == "Open") { return -1; }
-		if (rightFingering == "P") { return 0; }
-		if (rightFingering == "I") { return 1; }
-		if (rightFingering == "M") { return 2; }
-		if (rightFingering == "A") { return 3; }
-		if (rightFingering == "C") { return 4; }
+		if (rightFingering == null) { return -1; }
+		if (rightFingering.equals("Open")) { return -1; }
+		if (rightFingering.equals("P")) { return 0; }
+		if (rightFingering.equals("I")) { return 1; }
+		if (rightFingering.equals("M")) { return 2; }
+		if (rightFingering.equals("A")) { return 3; }
+		if (rightFingering.equals("C")) { return 4; }
 
-		return -2;
+		return -1;
 	}
 	
 	private boolean hammer;

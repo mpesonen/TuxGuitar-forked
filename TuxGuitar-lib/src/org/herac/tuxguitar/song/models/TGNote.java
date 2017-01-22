@@ -29,8 +29,8 @@ public abstract class TGNote {
 		this.string = 1;
 		this.tiedNote = false;
 		this.effect = factory.newEffect();
-		this.leftFingering = -2;
-		this.rightFingering = -2;
+		this.leftFingering = -1;
+		this.rightFingering = -1;
 	}
 	
 	public int getValue() {
@@ -89,7 +89,7 @@ public abstract class TGNote {
 
 	public void setRightFingering(int fingering ) { this.rightFingering = fingering; }
 
-	public boolean isFingeringSpecifiedNote() { return this.getLeftFingering() > -2 || this.getRightFingering() > -2; }
+	public boolean isFingeringSpecifiedNote() { return this.getLeftFingering() > -1 || this.getRightFingering() > -1; }
 	
 	public TGNote clone(TGFactory factory){
 		TGNote note = factory.newNote();

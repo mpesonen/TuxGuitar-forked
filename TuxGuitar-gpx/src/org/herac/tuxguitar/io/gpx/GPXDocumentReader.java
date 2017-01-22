@@ -500,8 +500,14 @@ public class GPXDocumentReader {
 					note.setTrill(getChildNodeIntegerContent(noteNode, "Trill"));
 
 					// Reading fingerings
-					note.setLeftFingering( getChildNodeContent(noteNode, "LeftFingering") );
-					note.setRightFingering( getChildNodeContent(noteNode, "RightFingering") );
+					String leftFingering = getChildNodeContent(noteNode, "LeftFingering");
+					if (leftFingering != null && !leftFingering.isEmpty()) {
+						note.setLeftFingering( leftFingering );
+					}
+					String rightFingering = getChildNodeContent(noteNode, "RightFingering");
+					if (rightFingering != null && !rightFingering.isEmpty()) {
+						note.setRightFingering( rightFingering );
+					}
 
 					note.setVibrato( getChildNode(noteNode, "Vibrato") != null );
 					

@@ -452,6 +452,9 @@ public class GP5OutputStream extends GTPOutputStream {
 		if( note.getEffect().isAccentuatedNote() ){
 			flags |= 0x40;
 		}
+		if (note.isFingeringSpecifiedNote()) {
+			flags |= 0x80;
+		}
 		writeUnsignedByte(flags);
 		
 		if ((flags & 0x20) != 0) {
@@ -468,6 +471,10 @@ public class GP5OutputStream extends GTPOutputStream {
 		}
 		if ((flags & 0x20) != 0) {
 			writeByte((byte) note.getValue());
+		}
+		if ((flags & 0x80) != 0) {
+			writeByte((byte) note.getLeftFingering());
+			writeByte((byte) note.getRightFingering());
 		}
 		skipBytes(1);
 		if ((flags & 0x08) != 0) {

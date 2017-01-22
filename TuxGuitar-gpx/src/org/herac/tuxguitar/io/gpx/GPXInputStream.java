@@ -12,35 +12,10 @@ public class GPXInputStream implements TGSongReader{
 
 	public static final TGFileFormat FILE_FORMAT = new TGFileFormat("Guitar Pro 6", "audio/x-gtp", new String[]{"gpx"});
 
-	// TODO: check if necessary
-	private int gpxHeader;
-	private InputStream gpxStream;
-	private GPXFileSystem gpxFileSystem;
-	private TGFactory factory;
-	
 	public TGFileFormat getFileFormat() {
 		return FILE_FORMAT;
 	}
-
-	// TODO: check if necessary
-	public void init(TGFactory factory, InputStream stream) {
-		this.factory = factory;
-		this.gpxStream = stream;
-		this.gpxHeader = 0;
-		this.gpxFileSystem = new GPXFileSystem();
-	}
-
-	// TODO: check if necessary
-	public boolean isSupportedVersion() {
-		try {
-			this.gpxHeader = this.gpxFileSystem.getHeader( this.gpxStream );
-			
-			return this.gpxFileSystem.isSupportedHeader(this.gpxHeader);
-		} catch (Throwable throwable) {
-			return false;
-		}
-	}
-
+	
 	public void read(TGSongReaderHandle handle) throws TGFileFormatException {
 		try {
 			GPXFileSystem gpxFileSystem = new GPXFileSystem();
