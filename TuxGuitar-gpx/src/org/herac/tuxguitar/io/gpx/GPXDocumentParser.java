@@ -137,7 +137,7 @@ public class GPXDocumentParser {
 			tgMeasureHeader.setRepeatOpen(mbar.isRepeatStart());
 			tgMeasureHeader.setRepeatClose(mbar.getRepeatCount());
 			tgMeasureHeader.setTripletFeel(parseTripletFeel(mbar));
-			//tgMeasureHeader.setMarker(parseMarker(mbar, i));
+			tgMeasureHeader.setMarker(parseMarker(mbar, i));
 			if( mbar.getTime() != null && mbar.getTime().length == 2){
 				tgMeasureHeader.getTimeSignature().setNumerator(mbar.getTime()[0]);
 				tgMeasureHeader.getTimeSignature().getDenominator().setValue(mbar.getTime()[1]);
@@ -561,6 +561,7 @@ public class GPXDocumentParser {
 
 		marker.setMeasure(measureIndex);
 		marker.setTitle(gpxMasterBar.getMarkerText());
+		marker.setColor(TGColor.BLACK);
 
 		return marker;
 	}
