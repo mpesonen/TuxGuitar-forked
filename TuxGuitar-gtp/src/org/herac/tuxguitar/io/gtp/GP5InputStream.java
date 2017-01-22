@@ -575,7 +575,7 @@ public class GP5InputStream extends GTPInputStream {
 		}
 		if ((flags2 & 0x08) != 0) {
 			noteEffect.setSlide(true);
-			readByte();
+			noteEffect.setSlideFlags((int)readByte());
 		}
 		if ((flags2 & 0x10) != 0) {
 			readArtificialHarmonic(noteEffect);

@@ -602,20 +602,7 @@ public class GP5OutputStream extends GTPOutputStream {
 		}
 		
 		if ((flags2 & 0x08) != 0) {
-			if (effect.isSlideInFromAbove())
-				writeByte((byte) -2);
-			else if (effect.isSlideInFromBelow())
-				writeByte((byte) -1);
-			else if (effect.isShiftSlide())
-				writeByte((byte) 1);
-			else if (effect.isLegatoSlide())
-				writeByte((byte) 2);
-			else if (effect.isSlideOutDownwards())
-				writeByte((byte) 3);
-			else if (effect.isSlideOutUpwards())
-				writeByte((byte) 4);
-			else
-				writeByte((byte) 0);
+			writeByte((byte) effect.getSlideFlags());
 		}
 		
 		if ((flags2 & 0x10) != 0) {

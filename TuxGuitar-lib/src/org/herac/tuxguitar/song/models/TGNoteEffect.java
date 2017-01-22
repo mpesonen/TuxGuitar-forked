@@ -42,12 +42,7 @@ public abstract class TGNoteEffect {
 	private boolean fadeIn;
 	private boolean letRing;
 
-	private boolean isLegatoSlide;
-	private boolean isShiftSlide;
-	private boolean isSlideInFromAbove;
-	private boolean isSlideInFromBelow;
-	private boolean isSlideOutDownwards;
-	private boolean isSlideOutUpwards;
+	private int slideFlagsBitMask;
 	
 	public TGNoteEffect(){
 		this.bend = null;
@@ -71,12 +66,7 @@ public abstract class TGNoteEffect {
 		this.fadeIn = false;
 		this.letRing = false;
 
-		this.isLegatoSlide = false;
-		this.isShiftSlide = false;
-		this.isSlideInFromAbove = false;
-		this.isSlideInFromBelow = false;
-		this.isSlideOutDownwards = false;
-		this.isSlideOutUpwards = false;
+		this.slideFlagsBitMask = 0;
 	}
 	
 	public boolean isDeadNote() {
@@ -230,34 +220,21 @@ public abstract class TGNoteEffect {
 		}
 	}
 
-	public void setSlideFlags(int slideFlagBitMask) {
-		if ((2 & slideFlagBitMask) == 2) {
-			this.isLegatoSlide = true;
-		}
-		if ((1 & slideFlagBitMask) == 1) {
-			this.isShiftSlide = true;
-		}
-		if ((32 & slideFlagBitMask) == 32) {
-			this.isSlideInFromAbove = true;
-		}
-		if ((16 & slideFlagBitMask) == 16) {
-			this.isSlideInFromBelow = true;
-		}
-		if ((4 & slideFlagBitMask) == 4) {
-			this.isSlideOutDownwards = true;
-		}
-		if ((8 & slideFlagBitMask) == 8) {
-			this.isSlideOutUpwards = true;
-		}
-		
+	public int getSlideFlags()
+	{
+		return this.slideFlagsBitMask;
 	}
 
-	public boolean isLegatoSlide() { return this.isLegatoSlide; }
-	public boolean isShiftSlide() { return this.isShiftSlide; }
-	public boolean isSlideInFromAbove() { return this.isSlideInFromAbove; }
-	public boolean isSlideInFromBelow() { return this.isSlideInFromBelow; }
-	public boolean isSlideOutDownwards() { return this.isSlideOutDownwards; }
-	public boolean isSlideOutUpwards() { return this.isSlideOutUpwards; }
+	public void setSlideFlags(int slideFlagBitMask) {
+		this.slideFlagsBitMask = slideFlagBitMask;
+	}
+
+	public boolean isLegatoSlide() { return (2 & this.slideFlagsBitMask) == 2; }
+	public boolean isShiftSlide() { return (1 & this.slideFlagsBitMask) == 1; }
+	public boolean isSlideInFromAbove() { return (32 & this.slideFlagsBitMask) == 32; }
+	public boolean isSlideInFromBelow() { return (16 & this.slideFlagsBitMask) == 16; }
+	public boolean isSlideOutDownwards() { return (4 & this.slideFlagsBitMask) == 4; }
+	public boolean isSlideOutUpwards() { return (8 & this.slideFlagsBitMask) == 8; }
 	
 	public boolean isGhostNote() {
 		return this.ghostNote;
