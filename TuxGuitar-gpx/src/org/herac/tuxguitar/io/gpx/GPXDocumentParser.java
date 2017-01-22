@@ -137,7 +137,7 @@ public class GPXDocumentParser {
 			tgMeasureHeader.setRepeatOpen(mbar.isRepeatStart());
 			tgMeasureHeader.setRepeatClose(mbar.getRepeatCount());
 			tgMeasureHeader.setTripletFeel(parseTripletFeel(mbar));
-			tgMeasureHeader.setMarker(parseMarker(mbar, i));
+			tgMeasureHeader.setMarker(parseMarker(mbar, i + 1));
 			if( mbar.getTime() != null && mbar.getTime().length == 2){
 				tgMeasureHeader.getTimeSignature().setNumerator(mbar.getTime()[0]);
 				tgMeasureHeader.getTimeSignature().getDenominator().setValue(mbar.getTime()[1]);
@@ -216,7 +216,7 @@ public class GPXDocumentParser {
 					GPXVoice voice = this.document.getVoice( voiceIds[v] );
 					if( voice != null ){
 						long tgStart = tgMeasure.getStart();
-						for( int b = 0 ; b < voice.getBeatIds().length ; b ++){
+						for( int b = 0 ; b < voice.getBeatIds().length ; b++){
 							GPXBeat beat = this.document.getBeat( voice.getBeatIds()[b] );
 							GPXRhythm gpRhythm = this.document.getRhythm( beat.getRhythmId() );
 							
@@ -234,18 +234,19 @@ public class GPXDocumentParser {
 
 							TGStroke stroke = this.factory.newStroke();
 							stroke.setDirection(beat.getPickStrokeType());
+							stroke.setValue(TGDuration.SIXTY_FOURTH);
 							tgBeat.setStroke( stroke );
 
 							// Reading chord diagram from GPX to TG
 							if (beat.getHasChordDiagram()) {
 								int stringCount = 6;
 								TGChord chord = this.factory.newChord(6);
-								chord.setFirstFret(0);
 								chord.setName(beat.getChordName());
+								// In GP5 files, this seems to be always 1
+								chord.setFirstFret(1);
 								GPXChordDiagram chordDiagram = beat.getChordDiagram();
 								for (int strId = 0; strId < chordDiagram.getFrets().size(); strId++)
 									chord.addFretValue(strId, chordDiagram.getFrets().get(strId));
-								chord.setBeat(tgBeat);
 								tgBeat.setChord(chord);
 							}
 

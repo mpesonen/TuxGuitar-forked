@@ -88,9 +88,13 @@ public class GPXDocumentReader {
                                                 if (barIds[i] == barId) {
                                                     int trackId = i;
 
-                                                    GPXChordDiagram chordDiagram = this.gpxDocument.getTracks().get(trackId).getChordDiagrams().get(chordId);
-                                                    beat.setChordName(chordDiagram.getName());
-													beat.setChordDiagram(chordDiagram);
+                                                    for (GPXChordDiagram possibleChordDiagram : this.gpxDocument.getTracks().get(trackId).getChordDiagrams()) {
+                                                    	if (possibleChordDiagram.getId() == chordId)
+														{
+															beat.setChordName(possibleChordDiagram.getName());
+															beat.setChordDiagram(possibleChordDiagram);
+														}
+													}
                                                 }
                                             }
                                         }

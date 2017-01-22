@@ -18,7 +18,8 @@ public class GPXChordDiagram {
     {
         this.id = id;
         this.name = new String(name);
-        this.setFirstFret(0);
+        // Looking at GP5 behaviour, this is always 1
+        this.setFirstFret(1);
 
         this.frets = new ArrayList<Integer>();
     }
