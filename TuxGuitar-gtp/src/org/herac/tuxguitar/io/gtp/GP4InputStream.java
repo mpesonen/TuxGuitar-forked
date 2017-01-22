@@ -366,7 +366,8 @@ public class GP4InputStream extends GTPInputStream {
 			note.setValue( value >= 0 && value < 100 ? value : 0 );
 		}
 		if ((flags & 0x80) != 0) {
-			skip(2);
+			note.setLeftFingering(readByte());
+			note.setRightFingering(readByte());
 		}
 		if ((flags & 0x08) != 0) {
 			readNoteEffects(note.getEffect());

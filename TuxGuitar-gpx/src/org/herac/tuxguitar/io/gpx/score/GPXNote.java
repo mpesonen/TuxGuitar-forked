@@ -26,26 +26,30 @@ public class GPXNote {
 
 	public int getLeftFingeringAsInt()
 	{
-		if (this.leftFingering == null) { return -2; }
-		if (this.leftFingering.equals("Open")) { return -1; }
-		if (this.leftFingering.equals("P")) { return 0; }
-		if (this.leftFingering.equals("I")) { return 1; }
-		if (this.leftFingering.equals("M")) { return 2; }
-		if (this.leftFingering.equals("A")) { return 3; }
-		if (this.leftFingering.equals("C")) { return 4; }
+		String leftFingering = getLeftFingering();
+
+		if (leftFingering == null) { return -2; }
+		if (leftFingering.equals("Open")) { return -1; }
+		if (leftFingering.equals("P")) { return 0; }
+		if (leftFingering.equals("I")) { return 1; }
+		if (leftFingering.equals("M")) { return 2; }
+		if (leftFingering.equals("A")) { return 3; }
+		if (leftFingering.equals("C")) { return 4; }
 
 		return -2;
 	}
 
 	public int getRightFingeringAsInt()
 	{
-		if (this.rightFingering == null) { return -2; }
-		if (this.rightFingering == "Open") { return -1; }
-		if (this.rightFingering == "P") { return 0; }
-		if (this.rightFingering == "I") { return 1; }
-		if (this.rightFingering == "M") { return 2; }
-		if (this.rightFingering == "A") { return 3; }
-		if (this.rightFingering == "C") { return 4; }
+		String rightFingering = getRightFingering();
+
+		if (rightFingering == null) { return -2; }
+		if (rightFingering == "Open") { return -1; }
+		if (rightFingering == "P") { return 0; }
+		if (rightFingering == "I") { return 1; }
+		if (rightFingering == "M") { return 2; }
+		if (rightFingering == "A") { return 3; }
+		if (rightFingering == "C") { return 4; }
 
 		return -2;
 	}
