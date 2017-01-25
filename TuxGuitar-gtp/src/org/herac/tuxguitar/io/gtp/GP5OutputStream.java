@@ -621,11 +621,17 @@ public class GP5OutputStream extends GTPOutputStream {
 		}
 		
 	}
-	
+
 	private void writeBend(TGEffectBend bend) throws IOException {
 		int points = bend.getPoints().size();
+		int maxPointValue = Integer.MIN_VALUE;
+		for (int i = 0; i < points; i++) {
+			int currentBendValue = bend.getPoints().get(i).getValue() * GP_BEND_SEMITONE / TGEffectBend.SEMITONE_LENGTH;
+			if (currentBendValue > maxPointValue)
+				maxPointValue = currentBendValue;
+		}
 		writeByte((byte) 1);
-		writeInt(0);
+		writeInt(maxPointValue);
 		writeInt(points);
 		for (int i = 0; i < points; i++) {
 			TGEffectBend.BendPoint point = (TGEffectBend.BendPoint) bend.getPoints().get(i);
