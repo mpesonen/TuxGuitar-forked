@@ -32,6 +32,7 @@ public class GPXDocumentReader {
 		this.xmlDocument = getDocument(stream);
 		this.gpxDocument = new GPXDocument();
 
+		// DEBUG: printing the XML might be informative
 		//System.out.println(getStringFromDoc(this.xmlDocument));
 	}
 	
@@ -259,6 +260,10 @@ public class GPXDocumentReader {
 							if (propertyNode.getNodeName().equals("Property") ){ 
 								if( getAttributeValue(propertyNode, "name").equals("Tuning") ){
 									track.setTunningPitches( getChildNodeIntegerContentArray(propertyNode, "Pitches") );
+								}
+
+								if( getAttributeValue(propertyNode, "name").equals("CapoFret") ){
+									track.setCapoOffset(getChildNodeIntegerContent(propertyNode, "Fret"));
 								}
 
 								// Read chord diagram collection

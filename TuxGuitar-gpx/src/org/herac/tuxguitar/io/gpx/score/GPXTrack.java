@@ -10,6 +10,7 @@ public class GPXTrack {
 	
 	private int id;
 	private int[] tunningPitches;
+	private int capoOffset;
 	private int[] color;
 	private String name;
 
@@ -41,6 +42,14 @@ public class GPXTrack {
 	
 	public void setTunningPitches(int[] tunningPitches) {
 		this.tunningPitches = tunningPitches;
+	}
+
+	public int getCapoOffset() {
+		return this.capoOffset;
+	}
+
+	public void setCapoOffset(int capoOffset) {
+		this.capoOffset = capoOffset;
 	}
 
 	public String getName() {

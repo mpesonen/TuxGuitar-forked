@@ -102,6 +102,7 @@ public class GPXDocumentParser {
 					tgString.setValue(gpTrack.getTunningPitches()[ gpTrack.getTunningPitches().length - s ]);
 					tgTrack.getStrings().add(tgString);
 				}
+				tgTrack.setOffset(gpTrack.getCapoOffset());
 			}else if( tgChannel.isPercussionChannel() ){
 				for( int s = 1; s <= 6 ; s ++ ){
 					tgTrack.getStrings().add(TGSongManager.newString(this.factory, s, 0));
