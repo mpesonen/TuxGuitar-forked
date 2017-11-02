@@ -258,7 +258,7 @@ public class GPXDocumentParser {
 								for( int n = 0 ; n < beat.getNoteIds().length; n ++ ){
 									GPXNote gpNote = this.document.getNote( beat.getNoteIds()[n] );
 									if( gpNote != null ){
-										this.parseNote(gpNote, tgVoice, tgVelocity, beat);
+										this.parseNote(gpNote, tgVoice, tgVelocity, beat, tgMeasure);
 									}
 								}
 							}
@@ -275,7 +275,7 @@ public class GPXDocumentParser {
 		}
 	}
 	
-	private void parseNote(GPXNote gpNote, TGVoice tgVoice, int tgVelocity, GPXBeat gpBeat){
+	private void parseNote(GPXNote gpNote, TGVoice tgVoice, int tgVelocity, GPXBeat gpBeat, TGMeasure tgMeasure){
 		int tgValue = -1;
 		int tgString = -1;
 		
@@ -332,6 +332,22 @@ public class GPXDocumentParser {
 			tgNote.getEffect().setTremoloBar(parseTremoloBar( gpBeat ));
 			tgNote.setLeftFingering( gpNote.getLeftFingeringAsInt() );
 			tgNote.setRightFingering( gpNote.getRightFingeringAsInt() );
+
+			// Accidental logic
+			if (gpNote.getAccidental() != null)
+			{
+				// Swap accidentals logic. Key signature is flat when keySignature 8-14 in TGMeasure format
+				boolean isFlatKeySignature = tgMeasure.getKeySignature() > 7;
+				if (isFlatKeySignature && (gpNote.getAccidental() == GPXNote.Accidental.Sharp))
+				{
+					tgNote.setSwapAccidentals(true);
+				}
+				else if (!isFlatKeySignature && (gpNote.getAccidental() == GPXNote.Accidental.Flat))
+				{
+					tgNote.setSwapAccidentals(true);
+				}
+			}
+
 			tgVoice.addNote(tgNote);
 		}
 	}

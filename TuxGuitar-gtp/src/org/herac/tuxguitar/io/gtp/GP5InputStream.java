@@ -437,7 +437,9 @@ public class GP5InputStream extends GTPInputStream {
 		if ((flags & 0x01) != 0) {
 			skip(8);
 		}
-		skip(1);
+		// Second set of flags
+		int secondFlags = readByte();
+		note.setSwapAccidentals((secondFlags & 0x02) != 0);
 		if ((flags & 0x08) != 0) {
 			readNoteEffects(note.getEffect());
 		}

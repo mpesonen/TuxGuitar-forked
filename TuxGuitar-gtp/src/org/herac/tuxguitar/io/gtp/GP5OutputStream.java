@@ -476,7 +476,12 @@ public class GP5OutputStream extends GTPOutputStream {
 			writeByte((byte) note.getLeftFingering());
 			writeByte((byte) note.getRightFingering());
 		}
-		skipBytes(1);
+		int secondFlags = 0;
+		if (note.getSwapAccidentals() == true)
+		{
+			secondFlags = 0x02;
+		}
+		writeUnsignedByte((byte) secondFlags);
 		if ((flags & 0x08) != 0) {
 			writeNoteEffects(note.getEffect());
 		}

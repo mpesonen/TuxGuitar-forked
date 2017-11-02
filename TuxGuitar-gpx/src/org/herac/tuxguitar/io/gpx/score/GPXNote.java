@@ -23,6 +23,15 @@ public class GPXNote {
 
 	private String leftFingering;
 	private String rightFingering;
+	private Accidental accidental;
+	public enum Accidental
+	{
+		Sharp,
+		Flat,
+		Natural,
+		DoubleSharp,
+		DoubleFlat
+	}
 
 	public int getLeftFingeringAsInt()
 	{
@@ -87,6 +96,7 @@ public class GPXNote {
 		this.harmonicFret = -1;
 		this.leftFingering = "None";
 		this.rightFingering = "None";
+		this.accidental = null;
 	}
 	
 	public int getId() {
@@ -272,6 +282,10 @@ public class GPXNote {
 	public void setLeftFingering(String fingering) { this.leftFingering = fingering; }
 
 	public void setRightFingering(String fingering) { this.rightFingering = fingering; }
+
+	public Accidental getAccidental() { return accidental; }
+
+	public void setAccidental(Accidental accidental) { this.accidental = accidental; }
 
 	public boolean isHammer() { return hammer; }
 

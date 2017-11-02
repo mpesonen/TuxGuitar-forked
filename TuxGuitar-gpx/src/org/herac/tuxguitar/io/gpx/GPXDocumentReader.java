@@ -514,6 +514,20 @@ public class GPXDocumentReader {
 						note.setRightFingering( rightFingering );
 					}
 
+					// Reading accidentals
+					String accidentalString = getChildNodeContent(noteNode, "Accidental");
+					if (accidentalString != null && !accidentalString.isEmpty()) {
+						try
+						{
+							GPXNote.Accidental accidental = GPXNote.Accidental.valueOf(accidentalString);
+							note.setAccidental(accidental);
+						}
+						catch (Exception e)
+						{
+							System.out.println("Unexpected accidental value for " + accidentalString);
+						}
+					}
+
 					note.setVibrato( getChildNode(noteNode, "Vibrato") != null );
 					
 					NodeList propertyNodes = getChildNodeList(noteNode, "Properties");

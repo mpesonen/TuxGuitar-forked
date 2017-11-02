@@ -22,6 +22,7 @@ public abstract class TGNote {
 	private TGVoice voice;
 	private int leftFingering;
 	private int rightFingering;
+	private boolean swapAccidentals;
 	
 	public TGNote(TGFactory factory) {
 		this.value = 0;
@@ -31,6 +32,7 @@ public abstract class TGNote {
 		this.effect = factory.newEffect();
 		this.leftFingering = -1;
 		this.rightFingering = -1;
+		this.swapAccidentals = false;
 	}
 	
 	public int getValue() {
@@ -90,6 +92,10 @@ public abstract class TGNote {
 	public void setRightFingering(int fingering ) { this.rightFingering = fingering; }
 
 	public boolean isFingeringSpecifiedNote() { return this.getLeftFingering() > -1 || this.getRightFingering() > -1; }
+
+	public boolean getSwapAccidentals() { return this.swapAccidentals; }
+
+	public void setSwapAccidentals(boolean swapAccidentals) { this.swapAccidentals = swapAccidentals; }
 	
 	public TGNote clone(TGFactory factory){
 		TGNote note = factory.newNote();
@@ -100,6 +106,7 @@ public abstract class TGNote {
 		note.setEffect(getEffect().clone(factory));
 		note.setLeftFingering( getLeftFingering() );
 		note.setRightFingering( getRightFingering() );
+		note.setSwapAccidentals( getSwapAccidentals() );
 		return note;
 	}
 }
