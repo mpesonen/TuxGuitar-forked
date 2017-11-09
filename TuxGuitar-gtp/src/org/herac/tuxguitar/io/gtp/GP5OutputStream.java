@@ -201,9 +201,8 @@ public class GP5OutputStream extends GTPOutputStream {
 	
 	private void writeMeasureHeader(TGMeasureHeader measure, TGTimeSignature timeSignature, int keySignatureInGpFormat) throws IOException {
 		int flags = 0;
-		if(measure.getNumber() == 1){
-			flags |= 0x40;
-		}
+		// Always write key signature
+		flags |= 0x40;
 		if (measure.getNumber() == 1 || !measure.getTimeSignature().isEqual(timeSignature)) {
 			flags |= 0x01;
 			flags |= 0x02;
