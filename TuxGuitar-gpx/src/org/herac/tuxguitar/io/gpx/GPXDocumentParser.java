@@ -1,7 +1,10 @@
 package org.herac.tuxguitar.io.gpx;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
+import java.lang.Integer;
 
 import org.herac.tuxguitar.gm.GMChannelRoute;
 import org.herac.tuxguitar.graphics.control.TGNoteImpl;
@@ -21,7 +24,9 @@ public class GPXDocumentParser {
 	private static final float GP_BEND_SEMITONE =  25f;
 	private static final float GP_WHAMMY_BAR_POSITION = 100f;
 	private static final float GP_WHAMMY_BAR_SEMITONE =  50f;
-	
+
+	private static ArrayList<Integer> blackKeyNotes = new ArrayList<Integer>(Arrays.asList(1, 3, 6, 8, 10));
+
 	private TGFactory factory;
 	private GPXDocument document;
 	
@@ -190,7 +195,7 @@ public class GPXDocumentParser {
 				}
 				
 				if( gpBar != null ){
-					this.parseBar( gpBar , tgMeasure );
+					this.parseBar( gpBar , tgMeasure , tgTrack);
 				}
 			}
 			
@@ -198,7 +203,7 @@ public class GPXDocumentParser {
 		}
 	}
 	
-	private void parseBar(GPXBar bar , TGMeasure tgMeasure){
+	private void parseBar(GPXBar bar , TGMeasure tgMeasure, TGTrack tgTrack){
 		if (bar.getClef() != null) {
 			String clef = bar.getClef();
 			if (clef.equals("F4")){
@@ -258,7 +263,7 @@ public class GPXDocumentParser {
 								for( int n = 0 ; n < beat.getNoteIds().length; n ++ ){
 									GPXNote gpNote = this.document.getNote( beat.getNoteIds()[n] );
 									if( gpNote != null ){
-										this.parseNote(gpNote, tgVoice, tgVelocity, beat, tgMeasure);
+										this.parseNote(gpNote, tgVoice, tgVelocity, beat, tgMeasure, tgTrack);
 									}
 								}
 							}
@@ -275,7 +280,7 @@ public class GPXDocumentParser {
 		}
 	}
 	
-	private void parseNote(GPXNote gpNote, TGVoice tgVoice, int tgVelocity, GPXBeat gpBeat, TGMeasure tgMeasure){
+	private void parseNote(GPXNote gpNote, TGVoice tgVoice, int tgVelocity, GPXBeat gpBeat, TGMeasure tgMeasure, TGTrack tgTrack){
 		int tgValue = -1;
 		int tgString = -1;
 		
@@ -336,15 +341,21 @@ public class GPXDocumentParser {
 			// Accidental logic
 			if (gpNote.getAccidental() != null)
 			{
-				// Swap accidentals logic. Key signature is flat when keySignature 8-14 in TGMeasure format
-				boolean isFlatKeySignature = tgMeasure.getKeySignature() > 7;
-				if (isFlatKeySignature && (gpNote.getAccidental() == GPXNote.Accidental.Sharp))
-				{
-					tgNote.setSwapAccidentals(true);
-				}
-				else if (!isFlatKeySignature && (gpNote.getAccidental() == GPXNote.Accidental.Flat))
-				{
-					tgNote.setSwapAccidentals(true);
+				// Ensure string + fret tab format
+				if( gpNote.getString() >= 0 && gpNote.getFret() >= 0 ) {
+					// Swap accidentals logic. Key signature is flat when keySignature 8-14 in TGMeasure format
+					boolean isFlatKeySignature = tgMeasure.getKeySignature() > 7;
+
+					int openStringMidiNote = tgTrack.getString(tgTrack.stringCount() - gpNote.getString()).getValue();
+					int frettedMidiNoteInLowestOctave = (gpNote.getFret() + openStringMidiNote) % 12;
+
+					boolean isBlackKeyNote = blackKeyNotes.contains(frettedMidiNoteInLowestOctave);
+
+					if (isBlackKeyNote && isFlatKeySignature && (gpNote.getAccidental() == GPXNote.Accidental.Sharp)) {
+						tgNote.setSwapAccidentals(true);
+					} else if (isBlackKeyNote && !isFlatKeySignature && (gpNote.getAccidental() == GPXNote.Accidental.Flat)) {
+						tgNote.setSwapAccidentals(true);
+					}
 				}
 			}
 

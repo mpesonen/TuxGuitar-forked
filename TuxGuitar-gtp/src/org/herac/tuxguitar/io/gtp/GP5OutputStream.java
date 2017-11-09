@@ -177,16 +177,29 @@ public class GP5OutputStream extends GTPOutputStream {
 				if(i > 0 ){
 					skipBytes(1);
 				}
-				TGMeasureHeader measure = song.getMeasureHeader(i);
-				writeMeasureHeader(measure, timeSignature);
-				
-				timeSignature.setNumerator(measure.getTimeSignature().getNumerator());
-				timeSignature.getDenominator().setValue(measure.getTimeSignature().getDenominator().getValue());
+				TGMeasureHeader measureHeader = song.getMeasureHeader(i);
+
+				// Reading key signature from TGMeasure,
+				// translating from [0, 14] range to [-7, 7] range
+				int keySignatureInGpFormat = 0;
+				TGTrack track = song.getTrack(0);
+				TGMeasure measure = track.getMeasure(i);
+				int keySignatureInTgFormat = measure.getKeySignature();
+				if (keySignatureInTgFormat > 7) {
+					keySignatureInGpFormat = -keySignatureInTgFormat + 7; // Translate 8 to -1 etc.
+				}
+				else {
+					keySignatureInGpFormat = keySignatureInTgFormat;
+				}
+
+				writeMeasureHeader(measureHeader, timeSignature, keySignatureInGpFormat);
+				timeSignature.setNumerator(measureHeader.getTimeSignature().getNumerator());
+				timeSignature.getDenominator().setValue(measureHeader.getTimeSignature().getDenominator().getValue());
 			}
 		}
 	}
 	
-	private void writeMeasureHeader(TGMeasureHeader measure, TGTimeSignature timeSignature) throws IOException {
+	private void writeMeasureHeader(TGMeasureHeader measure, TGTimeSignature timeSignature, int keySignatureInGpFormat) throws IOException {
 		int flags = 0;
 		if(measure.getNumber() == 1){
 			flags |= 0x40;
@@ -225,7 +238,8 @@ public class GP5OutputStream extends GTPOutputStream {
 			writeByte((byte)measure.getRepeatAlternative());
 		}
 		if ((flags & 0x40) != 0) {
-			skipBytes(2);
+			writeByte((byte)keySignatureInGpFormat);
+			skipBytes(1);
 		}
 		if ((flags & 0x01) != 0) {
 			writeBytes( makeBeamEighthNoteBytes( measure.getTimeSignature() ));
