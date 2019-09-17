@@ -23,6 +23,7 @@ public abstract class TGBeat {
 	private TGText text;
 	private TGVoice[] voices;
 	private TGStroke stroke;
+	private TGTempo tempo;
 	
 	public TGBeat(TGFactory factory) {
 		this.start = TGDuration.QUARTER_TIME;
@@ -31,6 +32,7 @@ public abstract class TGBeat {
 		for( int i = 0 ; i < MAX_VOICES ; i ++ ){
 			this.setVoice(i, factory.newVoice(i));
 		}
+		this.tempo = null;
 	}
 	
 	public TGMeasure getMeasure() {
@@ -106,6 +108,10 @@ public abstract class TGBeat {
 	public TGStroke getStroke() {
 		return this.stroke;
 	}
+
+	public void setTempo(TGTempo tempo) { this.tempo = tempo; }
+
+	public TGTempo getTempo() { return this.tempo; }
 	
 	public boolean isRestBeat(){
 		for(int v = 0; v < this.countVoices() ; v ++ ){
@@ -129,6 +135,9 @@ public abstract class TGBeat {
 		}
 		if(this.text != null){
 			beat.setText( this.text.clone(factory));
+		}
+		if (this.tempo != null) {
+			beat.setTempo( this.tempo.clone(factory));
 		}
 		return beat;
 	}

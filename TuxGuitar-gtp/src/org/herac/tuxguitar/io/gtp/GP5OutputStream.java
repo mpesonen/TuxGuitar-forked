@@ -298,14 +298,14 @@ public class GP5OutputStream extends GTPOutputStream {
 			for (int j = 0; j < song.countTracks(); j++) {
 				TGTrack track = song.getTrack(j);
 				TGMeasure measure = track.getMeasure(i);
-				writeMeasure(measure, (header.getTempo().getValue() != tempo.getValue()) );
+				writeMeasure(measure); //, (header.getTempo().getValue() != tempo.getValue()) );
 				skipBytes(1);
 			}
 			tempo.copyFrom( header.getTempo() );
 		}
 	}
 	
-	private void writeMeasure(TGMeasure measure, boolean changeTempo) throws IOException {
+	private void writeMeasure(TGMeasure measure) throws IOException {
 		for(int v = 0; v < 2 ; v ++){
 			List<TGVoice> voices = new ArrayList<TGVoice>();
 			for (int m = 0; m < measure.countBeats(); m ++) {
@@ -321,7 +321,7 @@ public class GP5OutputStream extends GTPOutputStream {
 				writeInt( voices.size() );
 				for( int i = 0; i < voices.size() ; i ++ ){
 					TGVoice voice = (TGVoice) voices.get( i );
-					writeBeat(voice, voice.getBeat(), measure, ( changeTempo && i == 0 ) );					
+					writeBeat(voice, voice.getBeat(), measure );
 				}
 			}else{
 				// Fill empty voices.
@@ -334,14 +334,14 @@ public class GP5OutputStream extends GTPOutputStream {
 					
 					writeInt( count );
 					for( int i = 0; i < count ; i ++ ){
-						writeBeat(voice, voice.getBeat(), measure, ( changeTempo && i == 0 ));
+						writeBeat(voice, voice.getBeat(), measure );
 					}
 				}
 			}
 		}
 	}
 	
-	private void writeBeat(TGVoice voice, TGBeat beat, TGMeasure measure, boolean changeTempo) throws IOException {
+	private void writeBeat(TGVoice voice, TGBeat beat, TGMeasure measure) throws IOException {
 		TGDuration duration = voice.getDuration();
 		TGNoteEffect effect = getFactory().newEffect();
 		for (int i = 0; i < voice.countNotes(); i++) {
@@ -380,7 +380,7 @@ public class GP5OutputStream extends GTPOutputStream {
 		else if (effect.isTremoloBar() || effect.isTapping() || effect.isSlapping() || effect.isPopping() || effect.isFadeIn()) {
 			flags |= 0x08;
 		}
-		if (changeTempo) {
+		if ( beat.getTempo() != null) {
 			flags |= 0x10;
 		}
 		if (!duration.getDivision().isEqual(TGDivisionType.NORMAL)) {
@@ -413,7 +413,7 @@ public class GP5OutputStream extends GTPOutputStream {
 		}
 		
 		if ((flags & 0x10) != 0) {
-			writeMixChange(measure.getTempo());
+			writeMixChange(beat.getTempo());
 		}
 		int stringFlags = 0;
 		if (!voice.isRestVoice()) {
@@ -730,9 +730,10 @@ public class GP5OutputStream extends GTPOutputStream {
 		writeStringByteSizeOfInteger(""); //tempo name
 		writeInt((tempo != null)?tempo.getValue():-1); //tempo value
 		if((tempo != null)){
+			//writeByte((byte)1);
 			skipBytes(1);
 		}
-		writeByte((byte)1);
+		writeByte((byte)0);
 		writeByte((byte)0xff);
 	}
 	

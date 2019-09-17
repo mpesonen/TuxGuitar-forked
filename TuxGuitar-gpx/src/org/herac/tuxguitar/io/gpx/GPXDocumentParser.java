@@ -135,8 +135,8 @@ public class GPXDocumentParser {
 		List<GPXMasterBar> masterBars = this.document.getMasterBars();
 		for( int i = 0 ; i < masterBars.size() ; i ++ ){
 			GPXMasterBar mbar = (GPXMasterBar) masterBars.get(i);
-			GPXAutomation gpTempoAutomation = this.document.getAutomation("Tempo", i);
-			
+			GPXAutomation gpTempoAutomation = this.document.getAutomationAtBarAndPosition("Tempo", i, 0.0f);
+
 			TGMeasureHeader tgMeasureHeader = this.factory.newHeader();
 			tgMeasureHeader.setStart(tgStart);
 			tgMeasureHeader.setNumber( i + 1 );
@@ -195,7 +195,7 @@ public class GPXDocumentParser {
 				}
 				
 				if( gpBar != null ){
-					this.parseBar( gpBar , tgMeasure , tgTrack);
+					this.parseBar( gpBar , tgMeasure , tgTrack, gpMasterBarIndex);
 				}
 			}
 			
@@ -203,7 +203,7 @@ public class GPXDocumentParser {
 		}
 	}
 	
-	private void parseBar(GPXBar bar , TGMeasure tgMeasure, TGTrack tgTrack){
+	private void parseBar(GPXBar bar , TGMeasure tgMeasure, TGTrack tgTrack, int gpMasterBarIndex){
 		if (bar.getClef() != null) {
 			String clef = bar.getClef();
 			if (clef.equals("F4")){
@@ -214,7 +214,7 @@ public class GPXDocumentParser {
 				tgMeasure.setClef(TGMeasure.CLEF_TENOR);
 			}
 		}
-		
+
 		int[] voiceIds = bar.getVoiceIds();
 		for( int v = 0; v < TGBeat.MAX_VOICES; v ++ ){
 			if( voiceIds.length > v ){
@@ -225,9 +225,10 @@ public class GPXDocumentParser {
 						for( int b = 0 ; b < voice.getBeatIds().length ; b++){
 							GPXBeat beat = this.document.getBeat( voice.getBeatIds()[b] );
 							GPXRhythm gpRhythm = this.document.getRhythm( beat.getRhythmId() );
-							
+
 							TGBeat tgBeat = getBeat(tgMeasure, tgStart);
 							TGVoice tgVoice = tgBeat.getVoice( v % tgBeat.countVoices() );
+
 							tgVoice.setEmpty(false);
 							tgBeat.getStroke().setDirection( this.parseStroke(beat) );
 
@@ -267,7 +268,42 @@ public class GPXDocumentParser {
 									}
 								}
 							}
-							
+
+							// Custom conversion patch N: Tempo changes within a measure / on "Beat"s
+							int timeSignatureNumerator = tgMeasure.getTimeSignature().getNumerator();
+							int timeSignatureDenominatorAsInt = tgMeasure.getTimeSignature().getDenominator().getValue();
+							float positionInMeasure = (tgStart - tgMeasure.getStart())/ (float)TGDuration.QUARTER_TIME / (float)timeSignatureNumerator;
+
+							if (timeSignatureDenominatorAsInt == 2)
+							{
+								positionInMeasure *= 2;
+							}
+							else if (timeSignatureDenominatorAsInt == 8)
+							{
+								positionInMeasure /= 2;
+							}
+							else if (timeSignatureDenominatorAsInt == 16)
+							{
+								positionInMeasure /= 4;
+							}
+
+							GPXAutomation gpTempoAutomation = this.document.getAutomationAtBarAndPosition( "Tempo", gpMasterBarIndex, positionInMeasure);
+							if( gpTempoAutomation != null && gpTempoAutomation.getValue().length == 2 ){
+								int tgTempo = gpTempoAutomation.getValue()[0];
+								if( gpTempoAutomation.getValue()[1] == 1 ){
+									tgTempo = (tgTempo / 2);
+								}else if( gpTempoAutomation.getValue()[1] == 3 ){
+									tgTempo = (tgTempo + (tgTempo / 2));
+								}else if( gpTempoAutomation.getValue()[1] == 4 ){
+									tgTempo = (tgTempo * 2);
+								}else if( gpTempoAutomation.getValue()[1] == 5 ){
+									tgTempo = (tgTempo + (tgTempo * 2));
+								}
+								TGTempo newTempo = factory.newTempo();
+								newTempo.setValue(tgTempo);
+								tgBeat.setTempo( newTempo );
+							}
+
 							tgStart += tgVoice.getDuration().getTime();
 						}
 					}

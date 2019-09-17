@@ -226,7 +226,7 @@ public class GPXDocumentReader {
 						automation.setBarId( getChildNodeIntegerContent(automationNode, "Bar"));
 						automation.setValue( getChildNodeIntegerContentArray(automationNode, "Value"));
 						automation.setLinear( getChildNodeBooleanContent(automationNode, "Linear"));
-						automation.setPosition( getChildNodeIntegerContent(automationNode, "Position"));
+						automation.setPosition( getChildNodeFloatContent(automationNode, "Position"));
 						automation.setVisible( getChildNodeBooleanContent(automationNode, "Visible"));
 						
 						this.gpxDocument.getAutomations().add( automation );
@@ -699,6 +699,14 @@ public class GPXDocumentReader {
 	private int getChildNodeIntegerContent(Node node, String name){
 		try {
 			return new BigDecimal(this.getChildNodeContent(node, name)).intValue();
+		} catch( Throwable throwable ){
+			return 0;
+		}
+	}
+
+	private float getChildNodeFloatContent(Node node, String name){
+		try {
+			return new BigDecimal(this.getChildNodeContent(node, name)).floatValue();
 		} catch( Throwable throwable ){
 			return 0;
 		}

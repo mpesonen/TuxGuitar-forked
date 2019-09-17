@@ -118,6 +118,22 @@ public class GPXDocument {
 		}
 		return null;
 	}
+
+	public GPXAutomation getAutomationAtBarAndPosition( String type, int barId, float position )
+	{
+		GPXAutomation result = null;
+
+		Iterator<GPXAutomation> it = this.automations.iterator();
+		while( it.hasNext() ){
+			GPXAutomation automation = (GPXAutomation)it.next();
+			if( automation.getType() != null && automation.getType().equals( type ) ){
+				if( automation.getBarId() == barId  && result == null && automation.getPosition() == position ){
+					result = automation;
+				}
+			}
+		}
+		return result;
+	}
 	
 	public GPXAutomation getAutomation( String type, int untilBarId ){
 		GPXAutomation result = null;

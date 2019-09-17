@@ -4,7 +4,7 @@ public class GPXAutomation {
 	
 	private String type;
 	private int barId;
-	private int position;
+	private float position;
 	private boolean linear;
 	private boolean visible;
 	private int[] value;
@@ -29,11 +29,11 @@ public class GPXAutomation {
 		this.barId = barId;
 	}
 
-	public int getPosition() {
+	public float getPosition() {
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public void setPosition(float position) {
 		this.position = position;
 	}
 
