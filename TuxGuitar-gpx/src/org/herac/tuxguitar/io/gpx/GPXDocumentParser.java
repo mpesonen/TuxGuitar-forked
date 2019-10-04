@@ -148,17 +148,24 @@ public class GPXDocumentParser {
 				tgMeasureHeader.getTimeSignature().setNumerator(mbar.getTime()[0]);
 				tgMeasureHeader.getTimeSignature().getDenominator().setValue(mbar.getTime()[1]);
 			}
-			if( gpTempoAutomation != null && gpTempoAutomation.getValue().length == 2 ){
-				int tgTempo = gpTempoAutomation.getValue()[0];
-				if( gpTempoAutomation.getValue()[1] == 1 ){
-					tgTempo = (tgTempo / 2);
-				}else if( gpTempoAutomation.getValue()[1] == 3 ){
-					tgTempo = (tgTempo + (tgTempo / 2));
-				}else if( gpTempoAutomation.getValue()[1] == 4 ){
-					tgTempo = (tgTempo * 2);
-				}else if( gpTempoAutomation.getValue()[1] == 5 ){
-					tgTempo = (tgTempo + (tgTempo * 2));
+			if( gpTempoAutomation != null && gpTempoAutomation.getValue().length >= 1){
+				int tgTempo = Math.round(gpTempoAutomation.getValue()[0]);
+
+				// Guitar Pro 7.5.2 and earlier export a tuple format tempo, e.g. "<Value>140 2</Value>"
+				if (gpTempoAutomation.getValue().length > 1) {
+					int gpTempoAutomationDivisionValue = (int)gpTempoAutomation.getValue()[1];
+
+					if (gpTempoAutomationDivisionValue == 1) {
+						tgTempo = (tgTempo / 2);
+					} else if (gpTempoAutomationDivisionValue == 3) {
+						tgTempo = (tgTempo + (tgTempo / 2));
+					} else if (gpTempoAutomationDivisionValue == 4) {
+						tgTempo = (tgTempo * 2);
+					} else if (gpTempoAutomationDivisionValue == 5) {
+						tgTempo = (tgTempo + (tgTempo * 2));
+					}
 				}
+
 				tgMeasureHeader.getTempo().setValue( tgTempo );
 			}
 			tgSong.addMeasureHeader(tgMeasureHeader);
@@ -289,7 +296,7 @@ public class GPXDocumentParser {
 
 							GPXAutomation gpTempoAutomation = this.document.getAutomationAtBarAndPosition( "Tempo", gpMasterBarIndex, positionInMeasure);
 							if( gpTempoAutomation != null && gpTempoAutomation.getValue().length == 2 ){
-								int tgTempo = gpTempoAutomation.getValue()[0];
+								int tgTempo = Math.round(gpTempoAutomation.getValue()[0]); // Float tempos will be rounded to int here
 								if( gpTempoAutomation.getValue()[1] == 1 ){
 									tgTempo = (tgTempo / 2);
 								}else if( gpTempoAutomation.getValue()[1] == 3 ){

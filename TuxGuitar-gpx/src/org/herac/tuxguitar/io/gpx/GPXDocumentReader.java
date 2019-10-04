@@ -27,7 +27,7 @@ public class GPXDocumentReader {
 	
 	private Document xmlDocument;
 	private GPXDocument gpxDocument;
-	
+
 	public GPXDocumentReader(InputStream stream){
 		this.xmlDocument = getDocument(stream);
 		this.gpxDocument = new GPXDocument();
@@ -224,7 +224,7 @@ public class GPXDocumentReader {
 						GPXAutomation automation = new GPXAutomation();
 						automation.setType( getChildNodeContent(automationNode, "Type"));
 						automation.setBarId( getChildNodeIntegerContent(automationNode, "Bar"));
-						automation.setValue( getChildNodeIntegerContentArray(automationNode, "Value"));
+						automation.setValue( getChildNodeFloatContentArray(automationNode, "Value"));
 						automation.setLinear( getChildNodeBooleanContent(automationNode, "Linear"));
 						automation.setPosition( getChildNodeFloatContent(automationNode, "Position"));
 						automation.setVisible( getChildNodeBooleanContent(automationNode, "Visible"));
@@ -731,5 +731,26 @@ public class GPXDocumentReader {
 	
 	private int[] getChildNodeIntegerContentArray(Node node, String name ){
 		return getChildNodeIntegerContentArray(node, name, (" ") );
+	}
+
+	private float[] getChildNodeFloatContentArray(Node node, String name , String regex){
+		String rawContents = this.getChildNodeContent(node, name);
+		if( rawContents != null ){
+			String[] contents = rawContents.trim().split(regex);
+			float[] floatContents = new float[contents.length];
+			for( int i = 0 ; i < floatContents.length; i ++ ){
+				try {
+					floatContents[i] = new BigDecimal( contents[i].trim() ).floatValue();
+				} catch( Throwable throwable ){
+					floatContents[i] = 0;
+				}
+			}
+			return floatContents;
+		}
+		return null;
+	}
+
+	private float[] getChildNodeFloatContentArray(Node node, String name ){
+		return getChildNodeFloatContentArray(node, name, (" ") );
 	}
 }

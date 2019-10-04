@@ -7,7 +7,7 @@ public class GPXAutomation {
 	private float position;
 	private boolean linear;
 	private boolean visible;
-	private int[] value;
+	private float[] value;
 	
 	public GPXAutomation(){
 		super();
@@ -53,11 +53,11 @@ public class GPXAutomation {
 		this.visible = visible;
 	}
 
-	public int[] getValue() {
+	public float[] getValue() {
 		return value;
 	}
 
-	public void setValue(int[] value) {
+	public void setValue(float[] value) {
 		this.value = value;
 	}
 }
