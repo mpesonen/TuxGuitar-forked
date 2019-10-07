@@ -295,16 +295,20 @@ public class GPXDocumentParser {
 							}
 
 							GPXAutomation gpTempoAutomation = this.document.getAutomationAtBarAndPosition( "Tempo", gpMasterBarIndex, positionInMeasure);
-							if( gpTempoAutomation != null && gpTempoAutomation.getValue().length == 2 ){
+							if( gpTempoAutomation != null && gpTempoAutomation.getValue().length >= 1 ){
 								int tgTempo = Math.round(gpTempoAutomation.getValue()[0]); // Float tempos will be rounded to int here
-								if( gpTempoAutomation.getValue()[1] == 1 ){
-									tgTempo = (tgTempo / 2);
-								}else if( gpTempoAutomation.getValue()[1] == 3 ){
-									tgTempo = (tgTempo + (tgTempo / 2));
-								}else if( gpTempoAutomation.getValue()[1] == 4 ){
-									tgTempo = (tgTempo * 2);
-								}else if( gpTempoAutomation.getValue()[1] == 5 ){
-									tgTempo = (tgTempo + (tgTempo * 2));
+
+								// Guitar 7.5.2 and prior versions export tempos as an integer tuple, e.g. "140 2"
+								if ( gpTempoAutomation.getValue().length == 2 ) {
+									if (gpTempoAutomation.getValue()[1] == 1) {
+										tgTempo = (tgTempo / 2);
+									} else if (gpTempoAutomation.getValue()[1] == 3) {
+										tgTempo = (tgTempo + (tgTempo / 2));
+									} else if (gpTempoAutomation.getValue()[1] == 4) {
+										tgTempo = (tgTempo * 2);
+									} else if (gpTempoAutomation.getValue()[1] == 5) {
+										tgTempo = (tgTempo + (tgTempo * 2));
+									}
 								}
 								TGTempo newTempo = factory.newTempo();
 								newTempo.setValue(tgTempo);
